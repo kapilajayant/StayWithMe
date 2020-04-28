@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/item_rewards"
+        android:title="Rewards"
+        android:icon="@drawable/ic_card_giftcard_black_24dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:showAsAction="ifRoom|collapseActionView"
+        />
+
+    <item
+        android:id="@+id/item_timer"
+        android:title="Timer"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:icon="@drawable/ic_access_time_black_24dp"
+        />
+
+
+
+</menu>

@@ -7,13 +7,20 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
@@ -38,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
     private GoogleMap mMap;
     private GeofencingClient geofencingClient;
-    FusedLocationProviderClient fusedLocationProviderClient;
+    private FusedLocationProviderClient fusedLocationProviderClient;
     private double currLatitude, currLongitude;
 
     private static final String TAG = "MapsActivity";
@@ -49,6 +56,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setActionBar(toolbar);
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -61,6 +76,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getCurrentLocation();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.action_menu, menu);
+
+        final MenuItem rewardsItem = menu.findItem(R.id.item_rewards);
+        final MenuItem timerItem = menu.findItem(R.id.item_timer);
+
+        rewardsItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                startActivity(new Intent(MapsActivity.this, RewardsActivity.class));
+                return false;
+            }
+        });
+
+        return true;
+    }
+
 
 
     /**
@@ -77,7 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         getCurrentLocation();
         // Add a marker in Sydney and move the camera
-        LatLng currLocation = new LatLng(30, 80);
+        LatLng currLocation = new LatLng(currLatitude, currLongitude);
         mMap.addMarker(new MarkerOptions().position(currLocation).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currLocation));
 
@@ -98,8 +133,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng currLocation = new LatLng(currLatitude, currLongitude);
                     mMap.addMarker(new MarkerOptions().position(currLocation).title("Your Location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(currLocation));
-                    addCircle(currLocation, 100);
-                    tryAddingGeofence(currLocation, 100);
+                    addCircle(currLocation, 5);
+                    tryAddingGeofence(currLocation, 5);
                     Toast.makeText(MapsActivity.this, String.valueOf(currLatitude)+String.valueOf(currLongitude), Toast.LENGTH_SHORT).show();
                 }
                 else
